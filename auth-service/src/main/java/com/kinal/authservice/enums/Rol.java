@@ -1,4 +1,4 @@
-package com.kinal.evaluacionfinal.enums;
+package com.kinal.authservice.enums;
 
 public enum Rol {
     ADMIN,

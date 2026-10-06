@@ -1,6 +1,6 @@
-package com.kinal.evaluacionfinal.repository;
+package com.kinal.authservice.repository;
 
-import com.kinal.evaluacionfinal.entity.Usuario;
+import com.kinal.authservice.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
