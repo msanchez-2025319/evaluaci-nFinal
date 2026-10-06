@@ -1,10 +1,10 @@
-package com.kinal.evaluacionfinal;
+package com.kinal.authservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EvaluacionfinalApplicationTests {
+class AuthServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

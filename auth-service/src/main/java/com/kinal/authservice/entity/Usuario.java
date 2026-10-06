@@ -1,6 +1,6 @@
-package com.kinal.evaluacionfinal.entity;
+package com.kinal.authservice.entity;
 
-import com.kinal.evaluacionfinal.enums.Rol;
+import com.kinal.authservice.enums.Rol;
 import jakarta.persistence.*;
 import lombok.*;
 
