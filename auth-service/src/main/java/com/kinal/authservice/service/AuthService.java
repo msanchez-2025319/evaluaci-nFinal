@@ -6,6 +6,7 @@ import com.kinal.authservice.dto.LoginResponse;
 import com.kinal.authservice.dto.RegisterRequest;
 import com.kinal.authservice.entity.Usuario;
 import com.kinal.authservice.enums.Rol;
+import com.kinal.authservice.exception.InvalidCredentialsException;
 import com.kinal.authservice.repository.UsuarioRepository;
 import com.kinal.authservice.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,11 +63,11 @@ public class AuthService {
 
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Credenciales incorrectas")
+                        new InvalidCredentialsException("Credenciales incorrectas")
                 );
 
         if (!passwordEncoder.matches(request.password(), usuario.getPassword())) {
-            throw new IllegalArgumentException("Credenciales incorrectas");
+            throw new InvalidCredentialsException("Credenciales incorrectas");
         }
 
         String token = jwtService.generarToken(usuario);
