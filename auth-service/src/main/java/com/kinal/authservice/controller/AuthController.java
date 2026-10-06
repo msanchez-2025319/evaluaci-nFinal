@@ -1,6 +1,8 @@
 package com.kinal.authservice.controller;
 
 import com.kinal.authservice.dto.AuthResponse;
+import com.kinal.authservice.dto.LoginRequest;
+import com.kinal.authservice.dto.LoginResponse;
 import com.kinal.authservice.dto.RegisterRequest;
 import com.kinal.authservice.service.AuthService;
 import jakarta.validation.Valid;
@@ -27,5 +29,14 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(
+            @Valid @RequestBody LoginRequest request
+    ) {
+        LoginResponse response = authService.login(request);
+
+        return ResponseEntity.ok(response);
     }
 }
