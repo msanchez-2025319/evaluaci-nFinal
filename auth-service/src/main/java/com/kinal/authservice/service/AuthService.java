@@ -33,10 +33,13 @@ public class AuthService {
     @Transactional
     public AuthResponse register(RegisterRequest request) {
 
-        String email = request.email().trim().toLowerCase();
+        String email =
+                request.email().trim().toLowerCase();
 
         if (usuarioRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("El correo ya está registrado");
+            throw new IllegalArgumentException(
+                    "El correo ya está registrado"
+            );
         }
 
         Usuario usuario = Usuario.builder()
@@ -44,11 +47,16 @@ public class AuthService {
                 .direccion(request.direccion().trim())
                 .telefono(request.telefono().trim())
                 .email(email)
-                .password(passwordEncoder.encode(request.password()))
+                .password(
+                        passwordEncoder.encode(
+                                request.password()
+                        )
+                )
                 .rol(Rol.CLIENTE)
                 .build();
 
-        Usuario guardado = usuarioRepository.save(usuario);
+        Usuario guardado =
+                usuarioRepository.save(usuario);
 
         return new AuthResponse(
                 "Usuario registrado correctamente",
@@ -59,18 +67,28 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest request) {
 
-        String email = request.email().trim().toLowerCase();
+        String email =
+                request.email().trim().toLowerCase();
 
-        Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new InvalidCredentialsException("Credenciales incorrectas")
-                );
+        Usuario usuario =
+                usuarioRepository.findByEmail(email)
+                        .orElseThrow(() ->
+                                new InvalidCredentialsException(
+                                        "Credenciales incorrectas"
+                                )
+                        );
 
-        if (!passwordEncoder.matches(request.password(), usuario.getPassword())) {
-            throw new InvalidCredentialsException("Credenciales incorrectas");
+        if (!passwordEncoder.matches(
+                request.password(),
+                usuario.getPassword()
+        )) {
+            throw new InvalidCredentialsException(
+                    "Credenciales incorrectas"
+            );
         }
 
-        String token = jwtService.generarToken(usuario);
+        String token =
+                jwtService.generarToken(usuario);
 
         return new LoginResponse(
                 token,

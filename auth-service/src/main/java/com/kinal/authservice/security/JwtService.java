@@ -21,12 +21,17 @@ public class JwtService {
     private long expiration;
 
     private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(
+                secret.getBytes(StandardCharsets.UTF_8)
+        );
     }
 
     public String generarToken(Usuario usuario) {
+
         Date ahora = new Date();
-        Date expiracion = new Date(ahora.getTime() + expiration);
+        Date expiracion = new Date(
+                ahora.getTime() + expiration
+        );
 
         return Jwts.builder()
                 .subject(usuario.getEmail())
@@ -50,13 +55,17 @@ public class JwtService {
     }
 
     public String obtenerRol(String token) {
-        return obtenerClaims(token).get("rol", String.class);
+        return obtenerClaims(token)
+                .get("rol", String.class);
     }
 
     public boolean esTokenValido(String token) {
         try {
             Claims claims = obtenerClaims(token);
-            return claims.getExpiration().after(new Date());
+
+            return claims.getExpiration()
+                    .after(new Date());
+
         } catch (Exception e) {
             return false;
         }

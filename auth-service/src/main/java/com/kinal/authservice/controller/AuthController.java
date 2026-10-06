@@ -24,7 +24,9 @@ public class AuthController {
     public ResponseEntity<AuthResponse> register(
             @Valid @RequestBody RegisterRequest request
     ) {
-        AuthResponse response = authService.register(request);
+
+        AuthResponse response =
+                authService.register(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -35,8 +37,9 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest request
     ) {
-        LoginResponse response = authService.login(request);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                authService.login(request)
+        );
     }
 }
