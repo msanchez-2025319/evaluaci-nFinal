@@ -41,12 +41,36 @@ public class PedidoService {
             );
         }
 
+        if (request.detalles() == null || request.detalles().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "El pedido debe contener al menos un producto"
+            );
+        }
+
+        // Obtener comercio del request o del primer producto
+        Long comercioId = request.comercioId();
+
+        if (comercioId == null) {
+
+            Long primerProductoId = request.detalles()
+                    .get(0).productoId();
+
+            Producto primerProducto = productoRepository
+                    .findById(primerProductoId)
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "No existe el producto con ID: " + primerProductoId
+                    ));
+
+            comercioId = primerProducto.getComercio().getId();
+        }
+
         Comercio comercio = comercioRepository
-                .findById(request.comercioId())
+                .findById(comercioId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe el comercio solicitado"
                 ));
 
+        // Validar que el comercio esté abierto
         if (!comercio.isAbierto()) {
             throw new IllegalArgumentException(
                     "El comercio se encuentra cerrado"
@@ -74,8 +98,7 @@ public class PedidoService {
 
         BigDecimal subtotalPedido = BigDecimal.ZERO;
 
-        // Se bloquean los productos en orden para evitar
-        // compras simultáneas con inventario incorrecto
+        // Bloquear productos para evitar problemas de concurrencia
         for (Map.Entry<Long, Integer> entrada : cantidades.entrySet()) {
 
             Long productoId = entrada.getKey();
@@ -87,6 +110,7 @@ public class PedidoService {
                             "No existe el producto con ID: " + productoId
                     ));
 
+            // Verificar que pertenezca al comercio
             if (!producto.getComercio().getId()
                     .equals(comercio.getId())) {
                 throw new IllegalArgumentException(
@@ -94,12 +118,14 @@ public class PedidoService {
                 );
             }
 
+            // Verificar disponibilidad
             if (!producto.isDisponible()) {
                 throw new IllegalArgumentException(
                         "El producto no está disponible"
                 );
             }
 
+            // Verificar inventario
             if (producto.getStock() < cantidad) {
                 throw new InsufficientStockException(
                         "Stock insuficiente para: " + producto.getNombre()
