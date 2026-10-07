@@ -1,3 +1,4 @@
+
 package com.kinal.authservice.security;
 
 import com.kinal.authservice.entity.Usuario;
@@ -36,6 +37,7 @@ public class JwtService {
         return Jwts.builder()
                 .subject(usuario.getEmail())
                 .claim("rol", usuario.getRol().name())
+                .claim("usuarioId", usuario.getId())
                 .issuedAt(ahora)
                 .expiration(expiracion)
                 .signWith(getKey())
@@ -59,12 +61,25 @@ public class JwtService {
                 .get("rol", String.class);
     }
 
+    public Long obtenerUsuarioId(String token) {
+        Number usuarioId = obtenerClaims(token)
+                .get("usuarioId", Number.class);
+
+        if (usuarioId == null) {
+            throw new IllegalArgumentException(
+                    "El token no contiene el ID del usuario"
+            );
+        }
+
+        return usuarioId.longValue();
+    }
+
     public boolean esTokenValido(String token) {
         try {
             Claims claims = obtenerClaims(token);
 
-            return claims.getExpiration()
-                    .after(new Date());
+            return claims.getExpiration() != null
+                    && claims.getExpiration().after(new Date());
 
         } catch (Exception e) {
             return false;
