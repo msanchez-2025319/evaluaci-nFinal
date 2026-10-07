@@ -2,6 +2,7 @@
 package com.kinal.delivery_service.config;
 
 import com.kinal.delivery_service.security.JwtAuthenticationFilter;
+import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.annotation.Bean;
@@ -54,6 +55,11 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
+                        // Permitir procesamiento interno de errores
+                        .dispatcherTypeMatchers(
+                                DispatcherType.ERROR
+                        ).permitAll()
+
                         // Solo ADMIN puede registrar comercios
                         .requestMatchers(
                                 HttpMethod.POST,
@@ -66,7 +72,7 @@ public class SecurityConfig {
                                 "/api/v1/comercios/*/productos"
                         ).hasRole("ADMIN")
 
-                        // Usuarios autenticados pueden consultar comercios
+                        // Usuarios autenticados consultan comercios
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/v1/comercios",
@@ -79,7 +85,7 @@ public class SecurityConfig {
                                 "/api/v1/pedidos"
                         ).hasRole("CLIENTE")
 
-                        // Solo CLIENTE puede consultar sus pedidos
+                        // Solo CLIENTE consulta sus pedidos
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/v1/pedidos/mis-pedidos"
